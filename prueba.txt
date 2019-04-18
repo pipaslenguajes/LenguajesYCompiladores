@@ -1,0 +1,11 @@
+IF ( 1 )
+DEFVAR
+a__56
+INT
+FLOAT
+WHILE
+ENDIF
+DISPLAY
+5555555
+56.55555
+"fasfasfa% aaa"
