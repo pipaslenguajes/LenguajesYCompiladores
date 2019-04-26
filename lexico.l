@@ -11,6 +11,7 @@
  *  Grupo: 
  *
  *  Integrantes:
+ *	Brian Bayarri, Nicolas Bedetti, Aylen Hoz, German Lopez, Julian Morganella
  *      
  */
 %{
@@ -45,15 +46,13 @@
 %option noyywrap
 %option yylineno
 
-%x COMMENTS STR_CONST
-
 DIGITO 			[0-9]
 CHAR 			[a-zA-Z]
 
 ENTERO 			[1-9][0-9]{0,4}|0
 CONSTANTE_ENTERA 	-?{ENTERO}
 
-CONSTANTE_REAL 	-?[0-9]{0,10}\.[0-9]{0,10}
+CONSTANTE_REAL 	-?[0-9]{1,10}\.[0-9]{0,10}|-?[0-9]{0,10}\.[0-9]{1,10}
 
 ID 	{CHAR}({CHAR}|{DIGITO}|_)*
 
@@ -63,7 +62,7 @@ ESPACIO       " "
 CARACTERES_ESPECIALES [\@\$\_\~\\\,\%]
 CARACTERES_NO_PERMITIDOS [#\^\*\(\)\-\+\=\|\/\?\>\<\!\;\.\:\'\"\[\]\{\}{DIGITO}{CHAR}]
 
-INICIO_FIN_STR "
+INICIO_FIN_STR \"
 CONSTANTE_STRING {INICIO_FIN_STR}({CARACTERES_ESPECIALES}|{CARACTERES_NO_PERMITIDOS}|{ESPACIO}|{TABULACION}){0,30}{INICIO_FIN_STR}
 
 INICIO_COMENTARIO */
@@ -80,11 +79,17 @@ COMENTARIO {INICIO_COMENTARIO}({CARACTERES_ESPECIALES}|{CARACTERES_NO_PERMITIDOS
 
 "ELSE"                    { LEX_LOG("ELSE\n"); return ELSE; }
 
+"THEN"					          { LEX_LOG("THEN\n"); return THEN; }
+
 "ENDIF"                   { LEX_LOG("ENDIF\n"); return ENDIF; }
 
 "WHILE"                   { LEX_LOG("WHILE\n"); return WHILE; }
 
+"ENDWHILE"                { LEX_LOG("ENDWHILE\n"); return ENDWHILE; }
+
 "long"                    { LEX_LOG("LONG "); return LONG; }
+
+"TAKE"					  { LEX_LOG("TAKE "); return TAKE; }
                    
 "DEFVAR"                  { 
                             LEX_LOG("DEFVAR\n");
@@ -94,25 +99,25 @@ COMENTARIO {INICIO_COMENTARIO}({CARACTERES_ESPECIALES}|{CARACTERES_NO_PERMITIDOS
                             return ENDDEF;
                           }
 
-"DISPLAY"                   { LEX_LOG("DISPLAY"); return DISPLAY; }
+"DISPLAY"                 { LEX_LOG("DISPLAY"); return DISPLAY; }
 
-"GET"                    { LEX_LOG("GET"); return GET; }
+"GET"                     { LEX_LOG("GET"); return GET; }
 
 "INT"                     { 
                             LEX_LOG("INT\n"); 
-                            yylval.str = strdup( yytext );
+                            yylval.valor_int = atoi( yytext );
                             return INT;
                           }
 
 "FLOAT"                   { 
                             LEX_LOG("FLOAT\n"); 
-                            yylval.str = strdup( yytext );
+                            yylval.valor_float = atof( yytext );
                             return FLOAT;
                           }
 
 "STRING"                  { 
                             LEX_LOG("STRING\n");
-                            yylval.str = strdup( yytext );
+                            yylval.valor_string = strdup( yytext );
                             return STRING;
                           }
 
@@ -156,28 +161,34 @@ COMENTARIO {INICIO_COMENTARIO}({CARACTERES_ESPECIALES}|{CARACTERES_NO_PERMITIDOS
 "["                       { LEX_LOG(" CA "); return CA; }
 "]"                       { LEX_LOG(" CC "); return CC; }
 
-{ID}          {
-                if(strlen(yytext) <= 30){
-                  yylval.string_val = strdup(yytext);
-                  return ID;
-                }
-                LEX_LOG("ERROR- Supera la cantidad de 30 caracteres.");
-              }    
+{ID}          			  {
+			                if(strlen(yytext) <= 30){
+			                  yylval.valor_string = strdup(yytext);
+			                  return ID;
+			                }
+			                LEX_LOG("ERROR- Supera la cantidad de 30 caracteres.");
+			              }    
                         
-{CONSTANTE_REAL}  {
-                    if(atof(yytext)>=-3.40282347e+38F && atof(yytext)<=3.40282347e+38F){
-                    yylval.float_val = atof(yytext);
-                    return CTE_FLOAT;
-                  }
-                  LEX_LOG("ERROR- Supera el tamaño maximo de un real.");
-                }    
+{CONSTANTE_REAL}  		  {
+		                    if(atof(yytext)>=-3.40282347e+38F && atof(yytext)<=3.40282347e+38F){
+		                    	yylval.valor_float = atof(yytext);
+		                    	return CTE_FLOAT;
+		                    }
+		                   LEX_LOG("ERROR- Supera el tamaño maximo de un real.");
+		                  }  
 
-{CONSTANTE_ENTERA}  {
-                      if(atoll(yytext)>=-32768 && atoll(yytext)<=32767){
-                      yylval.int_val = atoi(yytext);
-                      return CTE_INT;
-                    }
-                    LEX_LOG("ERROR- Supera el tamaño maximo de un real.");
-                  }          
+{CONSTANTE_ENTERA}        {
+		                      if(atoll(yytext)>=-32768 && atoll(yytext)<=32767){
+		                      	yylval.valor_int = atoi(yytext);
+		                      	return CTE_INT;
+		                      }
+		                    LEX_LOG("ERROR- Supera el tamaño maximo de un real.");
+		                  } 
+
+{CONSTANTE_STRING}		  {	strcpy(yylval.valor_string,yytext);
+							return CTE_STRING;
+						  }
+							
+						        
 
 %%
