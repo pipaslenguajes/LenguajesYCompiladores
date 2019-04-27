@@ -1,0 +1,24 @@
+START
+	DEFVAR
+	INT : numero1; numero2; a; b
+	STRING : d;w
+	ENDDEF
+	numero1 := 10
+	numero2 := 2
+	IF a <= b 
+	THEN
+		a := 1
+		b:= 55
+	ENDIF
+	long([1,a,long([2,3,a])])
+	long([])
+	TAKE(+;3;[1;a;2;b;TAKE(*;3;[1;2;a]);long([1,a,long([2,3,a])])])
+	DISPLAY "aaasga"
+	d:= "@$_~\,%"
+	w:= ""
+	w:= " 	"
+	w:= "^*()-+=|/?><!;.:'"[]{}"
+	GET a
+	*/fasfsafsafas waq		~\	a   )-+= /*
+	
+END
