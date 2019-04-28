@@ -1,7 +1,7 @@
 START
 	DEFVAR
 	INT : numero1; numero2; a; b
-	STRING : d;w
+	STRING : d;ww
 	ENDDEF
 	numero1 := 123
 	numero2 := 2
