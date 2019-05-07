@@ -171,7 +171,7 @@ COMENTARIO {INICIO_COMENTARIO}{CADENA}*{FIN_COMENTARIO}
 							cota_error("El contenido de una cadena excede el limite permitido.");
 						  }
 {COMENTARIO}			{	
-							printf("_____COMENTARIO____");
+							printf("_____COMENTARIO: %s_____",yytext);
 						}			
 %%
 
