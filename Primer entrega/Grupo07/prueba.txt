@@ -5,13 +5,13 @@ START
 	FLOAT : real
 	ENDDEF
 	
-	*/Ejemplo asignacion de valores/*
+	*/Ejemplo */asigna/*cion de valores/*
 	numero1 := 123
 	numero2 := 2
 	numero3 := 130
 	cadena := "H0la mundo!!!"
 	real := .5
-	
+	*/Prueba de comentario */multiple/* funciona *//**/*
 	*/Ejemplo IF ELSE y operaciones logicas/*
 	IF numero2 <= numero1 AND numero3 >= numero1
 	THEN
