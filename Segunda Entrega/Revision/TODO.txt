@@ -1,0 +1,9 @@
+HAY QUE MOFICAR/AGREGAR/HACER
+
+*Ver error de que no se incluyen los .h
+*Despues de eso ver los errores posta
+*Ver que tira que hay 4 refucciones/desplazamientos
+*Hacer la semantica del take y long
+*Cambiar los mensajes de los comentarios de alexis
+*Cambiar nombres de variables y eso
+*De take_long.c sacar las cosas que eran de alexis y agregar las nuetras

@@ -1,0 +1,1822 @@
+Estado 29 conflictos: 2 desplazamiento(s)/reducción(ones)
+Estado 102 conflictos: 2 desplazamiento(s)/reducción(ones)
+
+
+Gramática
+
+    0 $accept: programa $end
+
+    1 programa: START seccion_declaracion bloque END
+
+    2 seccion_declaracion: DEFVAR bloque_dec ENDDEF
+
+    3 bloque_dec: bloque_dec declaracion
+    4           | declaracion
+
+    5 declaracion: t_dato DOS_PUNTOS lista_id
+
+    6 t_dato: FLOAT
+    7       | INT
+    8       | STRING
+
+    9 lista_id: lista_id PUNTO_COMA ID
+   10         | ID
+
+   11 bloque: bloque sentencia
+   12       | sentencia
+
+   13 sentencia: asignacion
+   14          | bloque_if
+   15          | bloque_while
+   16          | lectura
+   17          | escritura
+   18          | expresion_aritmetica
+
+   19 rutina_if: /* vacío */
+
+   20 rutina_then: /* vacío */
+
+   21 rutina_else: /* vacío */
+
+   22 bloque_if: IF rutina_if expresion_logica THEN rutina_then bloque ENDIF
+   23          | IF rutina_if expresion_logica THEN rutina_then bloque ELSE rutina_else bloque ENDIF
+
+   24 rutina_while: /* vacío */
+
+   25 bloque_while: WHILE rutina_while expresion_logica THEN rutina_then bloque ENDWHILE
+
+   26 $@1: /* vacío */
+
+   27 asignacion: ID ASIG $@1 expresion
+
+   28 expresion: expresion_cadena
+   29          | expresion_aritmetica
+
+   30 expresion_cadena: CTE_STRING
+
+   31 expresion_aritmetica: expresion_aritmetica SUMA termino_r
+   32                     | expresion_aritmetica RESTA termino_r
+   33                     | termino
+
+   34 termino_r: termino POR factor
+   35          | termino DIVIDIDO factor
+   36          | factor
+
+   37 termino: termino_r
+   38        | pre
+
+   39 pre: SUMA factor
+   40    | RESTA factor
+
+   41 $@2: /* vacío */
+
+   42 factor: PA $@2 expresion_aritmetica PC
+   43       | long
+   44       | take
+   45       | ID
+   46       | CTE_FLOAT
+   47       | CTE_INT
+
+   48 $@3: /* vacío */
+
+   49 expresion_logica: termino_logico_izq AND $@3 termino_logico
+
+   50 $@4: /* vacío */
+
+   51 expresion_logica: termino_logico_izq OR $@4 termino_logico
+   52                 | termino_logico
+   53                 | NOT termino_logico
+
+   54 termino_logico_izq: termino_logico
+
+   55 termino_logico: expr_aritmetica_izquierda comp_bool expresion_aritmetica
+
+   56 expr_aritmetica_izquierda: expresion_aritmetica
+
+   57 comp_bool: MENOR
+   58          | MAYOR
+   59          | MENOR_IGUAL
+   60          | MAYOR_IGUAL
+   61          | IGUAL
+   62          | DISTINTO
+
+   63 comp_aritmetico: SUMA
+   64                | RESTA
+   65                | POR
+   66                | DIVIDIDO
+
+   67 long: LONG PA CA lista_exp_coma CC PC
+   68     | LONG PA CA CC PC
+
+   69 take: TAKE PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA lista_exp_punto_coma CC PC
+   70     | TAKE PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA CC PC
+
+   71 lista_exp_coma: lista_exp_coma COMA expresion_aritmetica
+   72               | expresion_aritmetica
+
+   73 lista_exp_punto_coma: lista_exp_punto_coma PUNTO_COMA expresion_aritmetica
+   74                     | expresion_aritmetica
+
+   75 lectura: GET ID
+
+   76 escritura: DISPLAY ID
+   77          | DISPLAY CTE_STRING
+
+
+Terminales con las reglas donde aparecen
+
+$end (0) 0
+error (256)
+START (258) 1
+END (259) 1
+DEFVAR (260) 2
+ENDDEF (261) 2
+INT (262) 7
+FLOAT (263) 6
+STRING (264) 8
+WHILE (265) 25
+ENDWHILE (266) 25
+IF (267) 22 23
+THEN (268) 22 23 25
+ELSE (269) 23
+ENDIF (270) 22 23
+AND (271) 49
+OR (272) 51
+NOT (273) 53
+ASIG (274) 27
+SUMA (275) 31 39 63
+RESTA (276) 32 40 64
+POR (277) 34 65
+DIVIDIDO (278) 35 66
+MENOR (279) 57
+MAYOR (280) 58
+MENOR_IGUAL (281) 59
+MAYOR_IGUAL (282) 60
+IGUAL (283) 61
+DISTINTO (284) 62
+PA (285) 42 67 68 69 70
+PC (286) 42 67 68 69 70
+CA (287) 67 68 69 70
+CC (288) 67 68 69 70
+COMA (289) 71
+PUNTO_COMA (290) 9 69 70 73
+DOS_PUNTOS (291) 5
+GET (292) 75
+DISPLAY (293) 76 77
+LONG (294) 67 68
+TAKE (295) 69 70
+ID (296) 9 10 27 45 75 76
+CTE_FLOAT (297) 46
+CTE_INT (298) 47 69 70
+CTE_STRING (299) 30 77
+
+
+No terminales con las reglas donde aparecen
+
+$accept (45)
+    en la izquierda: 0
+programa (46)
+    en la izquierda: 1, en la derecha: 0
+seccion_declaracion (47)
+    en la izquierda: 2, en la derecha: 1
+bloque_dec (48)
+    en la izquierda: 3 4, en la derecha: 2 3
+declaracion (49)
+    en la izquierda: 5, en la derecha: 3 4
+t_dato (50)
+    en la izquierda: 6 7 8, en la derecha: 5
+lista_id (51)
+    en la izquierda: 9 10, en la derecha: 5 9
+bloque (52)
+    en la izquierda: 11 12, en la derecha: 1 11 22 23 25
+sentencia (53)
+    en la izquierda: 13 14 15 16 17 18, en la derecha: 11 12
+rutina_if (54)
+    en la izquierda: 19, en la derecha: 22 23
+rutina_then (55)
+    en la izquierda: 20, en la derecha: 22 23 25
+rutina_else (56)
+    en la izquierda: 21, en la derecha: 23
+bloque_if (57)
+    en la izquierda: 22 23, en la derecha: 14
+rutina_while (58)
+    en la izquierda: 24, en la derecha: 25
+bloque_while (59)
+    en la izquierda: 25, en la derecha: 15
+asignacion (60)
+    en la izquierda: 27, en la derecha: 13
+$@1 (61)
+    en la izquierda: 26, en la derecha: 27
+expresion (62)
+    en la izquierda: 28 29, en la derecha: 27
+expresion_cadena (63)
+    en la izquierda: 30, en la derecha: 28
+expresion_aritmetica (64)
+    en la izquierda: 31 32 33, en la derecha: 18 29 31 32 42 55 56
+    71 72 73 74
+termino_r (65)
+    en la izquierda: 34 35 36, en la derecha: 31 32 37
+termino (66)
+    en la izquierda: 37 38, en la derecha: 33 34 35
+pre (67)
+    en la izquierda: 39 40, en la derecha: 38
+factor (68)
+    en la izquierda: 42 43 44 45 46 47, en la derecha: 34 35 36 39
+    40
+$@2 (69)
+    en la izquierda: 41, en la derecha: 42
+expresion_logica (70)
+    en la izquierda: 49 51 52 53, en la derecha: 22 23 25
+$@3 (71)
+    en la izquierda: 48, en la derecha: 49
+$@4 (72)
+    en la izquierda: 50, en la derecha: 51
+termino_logico_izq (73)
+    en la izquierda: 54, en la derecha: 49 51
+termino_logico (74)
+    en la izquierda: 55, en la derecha: 49 51 52 53 54
+expr_aritmetica_izquierda (75)
+    en la izquierda: 56, en la derecha: 55
+comp_bool (76)
+    en la izquierda: 57 58 59 60 61 62, en la derecha: 55
+comp_aritmetico (77)
+    en la izquierda: 63 64 65 66, en la derecha: 69 70
+long (78)
+    en la izquierda: 67 68, en la derecha: 43
+take (79)
+    en la izquierda: 69 70, en la derecha: 44
+lista_exp_coma (80)
+    en la izquierda: 71 72, en la derecha: 67 71
+lista_exp_punto_coma (81)
+    en la izquierda: 73 74, en la derecha: 69 73
+lectura (82)
+    en la izquierda: 75, en la derecha: 16
+escritura (83)
+    en la izquierda: 76 77, en la derecha: 17
+
+
+estado 0
+
+    0 $accept: . programa $end
+
+    START  desplazar e ir al estado 1
+
+    programa  ir al estado 2
+
+
+estado 1
+
+    1 programa: START . seccion_declaracion bloque END
+
+    DEFVAR  desplazar e ir al estado 3
+
+    seccion_declaracion  ir al estado 4
+
+
+estado 2
+
+    0 $accept: programa . $end
+
+    $end  desplazar e ir al estado 5
+
+
+estado 3
+
+    2 seccion_declaracion: DEFVAR . bloque_dec ENDDEF
+
+    INT     desplazar e ir al estado 6
+    FLOAT   desplazar e ir al estado 7
+    STRING  desplazar e ir al estado 8
+
+    bloque_dec   ir al estado 9
+    declaracion  ir al estado 10
+    t_dato       ir al estado 11
+
+
+estado 4
+
+    1 programa: START seccion_declaracion . bloque END
+
+    WHILE      desplazar e ir al estado 12
+    IF         desplazar e ir al estado 13
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    GET        desplazar e ir al estado 17
+    DISPLAY    desplazar e ir al estado 18
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 21
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    bloque                ir al estado 24
+    sentencia             ir al estado 25
+    bloque_if             ir al estado 26
+    bloque_while          ir al estado 27
+    asignacion            ir al estado 28
+    expresion_aritmetica  ir al estado 29
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+    lectura               ir al estado 36
+    escritura             ir al estado 37
+
+
+estado 5
+
+    0 $accept: programa $end .
+
+    $default  aceptar
+
+
+estado 6
+
+    7 t_dato: INT .
+
+    $default  reduce usando la regla 7 (t_dato)
+
+
+estado 7
+
+    6 t_dato: FLOAT .
+
+    $default  reduce usando la regla 6 (t_dato)
+
+
+estado 8
+
+    8 t_dato: STRING .
+
+    $default  reduce usando la regla 8 (t_dato)
+
+
+estado 9
+
+    2 seccion_declaracion: DEFVAR bloque_dec . ENDDEF
+    3 bloque_dec: bloque_dec . declaracion
+
+    ENDDEF  desplazar e ir al estado 38
+    INT     desplazar e ir al estado 6
+    FLOAT   desplazar e ir al estado 7
+    STRING  desplazar e ir al estado 8
+
+    declaracion  ir al estado 39
+    t_dato       ir al estado 11
+
+
+estado 10
+
+    4 bloque_dec: declaracion .
+
+    $default  reduce usando la regla 4 (bloque_dec)
+
+
+estado 11
+
+    5 declaracion: t_dato . DOS_PUNTOS lista_id
+
+    DOS_PUNTOS  desplazar e ir al estado 40
+
+
+estado 12
+
+   25 bloque_while: WHILE . rutina_while expresion_logica THEN rutina_then bloque ENDWHILE
+
+    $default  reduce usando la regla 24 (rutina_while)
+
+    rutina_while  ir al estado 41
+
+
+estado 13
+
+   22 bloque_if: IF . rutina_if expresion_logica THEN rutina_then bloque ENDIF
+   23          | IF . rutina_if expresion_logica THEN rutina_then bloque ELSE rutina_else bloque ENDIF
+
+    $default  reduce usando la regla 19 (rutina_if)
+
+    rutina_if  ir al estado 42
+
+
+estado 14
+
+   39 pre: SUMA . factor
+
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    factor  ir al estado 44
+    long    ir al estado 34
+    take    ir al estado 35
+
+
+estado 15
+
+   40 pre: RESTA . factor
+
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    factor  ir al estado 45
+    long    ir al estado 34
+    take    ir al estado 35
+
+
+estado 16
+
+   42 factor: PA . $@2 expresion_aritmetica PC
+
+    $default  reduce usando la regla 41 ($@2)
+
+    $@2  ir al estado 46
+
+
+estado 17
+
+   75 lectura: GET . ID
+
+    ID  desplazar e ir al estado 47
+
+
+estado 18
+
+   76 escritura: DISPLAY . ID
+   77          | DISPLAY . CTE_STRING
+
+    ID          desplazar e ir al estado 48
+    CTE_STRING  desplazar e ir al estado 49
+
+
+estado 19
+
+   67 long: LONG . PA CA lista_exp_coma CC PC
+   68     | LONG . PA CA CC PC
+
+    PA  desplazar e ir al estado 50
+
+
+estado 20
+
+   69 take: TAKE . PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA lista_exp_punto_coma CC PC
+   70     | TAKE . PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA CC PC
+
+    PA  desplazar e ir al estado 51
+
+
+estado 21
+
+   27 asignacion: ID . ASIG $@1 expresion
+   45 factor: ID .
+
+    ASIG  desplazar e ir al estado 52
+
+    $default  reduce usando la regla 45 (factor)
+
+
+estado 22
+
+   46 factor: CTE_FLOAT .
+
+    $default  reduce usando la regla 46 (factor)
+
+
+estado 23
+
+   47 factor: CTE_INT .
+
+    $default  reduce usando la regla 47 (factor)
+
+
+estado 24
+
+    1 programa: START seccion_declaracion bloque . END
+   11 bloque: bloque . sentencia
+
+    END        desplazar e ir al estado 53
+    WHILE      desplazar e ir al estado 12
+    IF         desplazar e ir al estado 13
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    GET        desplazar e ir al estado 17
+    DISPLAY    desplazar e ir al estado 18
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 21
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    sentencia             ir al estado 54
+    bloque_if             ir al estado 26
+    bloque_while          ir al estado 27
+    asignacion            ir al estado 28
+    expresion_aritmetica  ir al estado 29
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+    lectura               ir al estado 36
+    escritura             ir al estado 37
+
+
+estado 25
+
+   12 bloque: sentencia .
+
+    $default  reduce usando la regla 12 (bloque)
+
+
+estado 26
+
+   14 sentencia: bloque_if .
+
+    $default  reduce usando la regla 14 (sentencia)
+
+
+estado 27
+
+   15 sentencia: bloque_while .
+
+    $default  reduce usando la regla 15 (sentencia)
+
+
+estado 28
+
+   13 sentencia: asignacion .
+
+    $default  reduce usando la regla 13 (sentencia)
+
+
+estado 29
+
+   18 sentencia: expresion_aritmetica .
+   31 expresion_aritmetica: expresion_aritmetica . SUMA termino_r
+   32                     | expresion_aritmetica . RESTA termino_r
+
+    SUMA   desplazar e ir al estado 55
+    RESTA  desplazar e ir al estado 56
+
+    SUMA      [reduce usando la regla 18 (sentencia)]
+    RESTA     [reduce usando la regla 18 (sentencia)]
+    $default  reduce usando la regla 18 (sentencia)
+
+
+estado 30
+
+   37 termino: termino_r .
+
+    $default  reduce usando la regla 37 (termino)
+
+
+estado 31
+
+   33 expresion_aritmetica: termino .
+   34 termino_r: termino . POR factor
+   35          | termino . DIVIDIDO factor
+
+    POR       desplazar e ir al estado 57
+    DIVIDIDO  desplazar e ir al estado 58
+
+    $default  reduce usando la regla 33 (expresion_aritmetica)
+
+
+estado 32
+
+   38 termino: pre .
+
+    $default  reduce usando la regla 38 (termino)
+
+
+estado 33
+
+   36 termino_r: factor .
+
+    $default  reduce usando la regla 36 (termino_r)
+
+
+estado 34
+
+   43 factor: long .
+
+    $default  reduce usando la regla 43 (factor)
+
+
+estado 35
+
+   44 factor: take .
+
+    $default  reduce usando la regla 44 (factor)
+
+
+estado 36
+
+   16 sentencia: lectura .
+
+    $default  reduce usando la regla 16 (sentencia)
+
+
+estado 37
+
+   17 sentencia: escritura .
+
+    $default  reduce usando la regla 17 (sentencia)
+
+
+estado 38
+
+    2 seccion_declaracion: DEFVAR bloque_dec ENDDEF .
+
+    $default  reduce usando la regla 2 (seccion_declaracion)
+
+
+estado 39
+
+    3 bloque_dec: bloque_dec declaracion .
+
+    $default  reduce usando la regla 3 (bloque_dec)
+
+
+estado 40
+
+    5 declaracion: t_dato DOS_PUNTOS . lista_id
+
+    ID  desplazar e ir al estado 59
+
+    lista_id  ir al estado 60
+
+
+estado 41
+
+   25 bloque_while: WHILE rutina_while . expresion_logica THEN rutina_then bloque ENDWHILE
+
+    NOT        desplazar e ir al estado 61
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    expresion_aritmetica       ir al estado 62
+    termino_r                  ir al estado 30
+    termino                    ir al estado 31
+    pre                        ir al estado 32
+    factor                     ir al estado 33
+    expresion_logica           ir al estado 63
+    termino_logico_izq         ir al estado 64
+    termino_logico             ir al estado 65
+    expr_aritmetica_izquierda  ir al estado 66
+    long                       ir al estado 34
+    take                       ir al estado 35
+
+
+estado 42
+
+   22 bloque_if: IF rutina_if . expresion_logica THEN rutina_then bloque ENDIF
+   23          | IF rutina_if . expresion_logica THEN rutina_then bloque ELSE rutina_else bloque ENDIF
+
+    NOT        desplazar e ir al estado 61
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    expresion_aritmetica       ir al estado 62
+    termino_r                  ir al estado 30
+    termino                    ir al estado 31
+    pre                        ir al estado 32
+    factor                     ir al estado 33
+    expresion_logica           ir al estado 67
+    termino_logico_izq         ir al estado 64
+    termino_logico             ir al estado 65
+    expr_aritmetica_izquierda  ir al estado 66
+    long                       ir al estado 34
+    take                       ir al estado 35
+
+
+estado 43
+
+   45 factor: ID .
+
+    $default  reduce usando la regla 45 (factor)
+
+
+estado 44
+
+   39 pre: SUMA factor .
+
+    $default  reduce usando la regla 39 (pre)
+
+
+estado 45
+
+   40 pre: RESTA factor .
+
+    $default  reduce usando la regla 40 (pre)
+
+
+estado 46
+
+   42 factor: PA $@2 . expresion_aritmetica PC
+
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    expresion_aritmetica  ir al estado 68
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+
+
+estado 47
+
+   75 lectura: GET ID .
+
+    $default  reduce usando la regla 75 (lectura)
+
+
+estado 48
+
+   76 escritura: DISPLAY ID .
+
+    $default  reduce usando la regla 76 (escritura)
+
+
+estado 49
+
+   77 escritura: DISPLAY CTE_STRING .
+
+    $default  reduce usando la regla 77 (escritura)
+
+
+estado 50
+
+   67 long: LONG PA . CA lista_exp_coma CC PC
+   68     | LONG PA . CA CC PC
+
+    CA  desplazar e ir al estado 69
+
+
+estado 51
+
+   69 take: TAKE PA . comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA lista_exp_punto_coma CC PC
+   70     | TAKE PA . comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA CC PC
+
+    SUMA      desplazar e ir al estado 70
+    RESTA     desplazar e ir al estado 71
+    POR       desplazar e ir al estado 72
+    DIVIDIDO  desplazar e ir al estado 73
+
+    comp_aritmetico  ir al estado 74
+
+
+estado 52
+
+   27 asignacion: ID ASIG . $@1 expresion
+
+    $default  reduce usando la regla 26 ($@1)
+
+    $@1  ir al estado 75
+
+
+estado 53
+
+    1 programa: START seccion_declaracion bloque END .
+
+    $default  reduce usando la regla 1 (programa)
+
+
+estado 54
+
+   11 bloque: bloque sentencia .
+
+    $default  reduce usando la regla 11 (bloque)
+
+
+estado 55
+
+   31 expresion_aritmetica: expresion_aritmetica SUMA . termino_r
+
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    termino_r  ir al estado 76
+    termino    ir al estado 77
+    pre        ir al estado 32
+    factor     ir al estado 33
+    long       ir al estado 34
+    take       ir al estado 35
+
+
+estado 56
+
+   32 expresion_aritmetica: expresion_aritmetica RESTA . termino_r
+
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    termino_r  ir al estado 78
+    termino    ir al estado 77
+    pre        ir al estado 32
+    factor     ir al estado 33
+    long       ir al estado 34
+    take       ir al estado 35
+
+
+estado 57
+
+   34 termino_r: termino POR . factor
+
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    factor  ir al estado 79
+    long    ir al estado 34
+    take    ir al estado 35
+
+
+estado 58
+
+   35 termino_r: termino DIVIDIDO . factor
+
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    factor  ir al estado 80
+    long    ir al estado 34
+    take    ir al estado 35
+
+
+estado 59
+
+   10 lista_id: ID .
+
+    $default  reduce usando la regla 10 (lista_id)
+
+
+estado 60
+
+    5 declaracion: t_dato DOS_PUNTOS lista_id .
+    9 lista_id: lista_id . PUNTO_COMA ID
+
+    PUNTO_COMA  desplazar e ir al estado 81
+
+    $default  reduce usando la regla 5 (declaracion)
+
+
+estado 61
+
+   53 expresion_logica: NOT . termino_logico
+
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    expresion_aritmetica       ir al estado 62
+    termino_r                  ir al estado 30
+    termino                    ir al estado 31
+    pre                        ir al estado 32
+    factor                     ir al estado 33
+    termino_logico             ir al estado 82
+    expr_aritmetica_izquierda  ir al estado 66
+    long                       ir al estado 34
+    take                       ir al estado 35
+
+
+estado 62
+
+   31 expresion_aritmetica: expresion_aritmetica . SUMA termino_r
+   32                     | expresion_aritmetica . RESTA termino_r
+   56 expr_aritmetica_izquierda: expresion_aritmetica .
+
+    SUMA   desplazar e ir al estado 55
+    RESTA  desplazar e ir al estado 56
+
+    $default  reduce usando la regla 56 (expr_aritmetica_izquierda)
+
+
+estado 63
+
+   25 bloque_while: WHILE rutina_while expresion_logica . THEN rutina_then bloque ENDWHILE
+
+    THEN  desplazar e ir al estado 83
+
+
+estado 64
+
+   49 expresion_logica: termino_logico_izq . AND $@3 termino_logico
+   51                 | termino_logico_izq . OR $@4 termino_logico
+
+    AND  desplazar e ir al estado 84
+    OR   desplazar e ir al estado 85
+
+
+estado 65
+
+   52 expresion_logica: termino_logico .
+   54 termino_logico_izq: termino_logico .
+
+    THEN      reduce usando la regla 52 (expresion_logica)
+    $default  reduce usando la regla 54 (termino_logico_izq)
+
+
+estado 66
+
+   55 termino_logico: expr_aritmetica_izquierda . comp_bool expresion_aritmetica
+
+    MENOR        desplazar e ir al estado 86
+    MAYOR        desplazar e ir al estado 87
+    MENOR_IGUAL  desplazar e ir al estado 88
+    MAYOR_IGUAL  desplazar e ir al estado 89
+    IGUAL        desplazar e ir al estado 90
+    DISTINTO     desplazar e ir al estado 91
+
+    comp_bool  ir al estado 92
+
+
+estado 67
+
+   22 bloque_if: IF rutina_if expresion_logica . THEN rutina_then bloque ENDIF
+   23          | IF rutina_if expresion_logica . THEN rutina_then bloque ELSE rutina_else bloque ENDIF
+
+    THEN  desplazar e ir al estado 93
+
+
+estado 68
+
+   31 expresion_aritmetica: expresion_aritmetica . SUMA termino_r
+   32                     | expresion_aritmetica . RESTA termino_r
+   42 factor: PA $@2 expresion_aritmetica . PC
+
+    SUMA   desplazar e ir al estado 55
+    RESTA  desplazar e ir al estado 56
+    PC     desplazar e ir al estado 94
+
+
+estado 69
+
+   67 long: LONG PA CA . lista_exp_coma CC PC
+   68     | LONG PA CA . CC PC
+
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    CC         desplazar e ir al estado 95
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    expresion_aritmetica  ir al estado 96
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+    lista_exp_coma        ir al estado 97
+
+
+estado 70
+
+   63 comp_aritmetico: SUMA .
+
+    $default  reduce usando la regla 63 (comp_aritmetico)
+
+
+estado 71
+
+   64 comp_aritmetico: RESTA .
+
+    $default  reduce usando la regla 64 (comp_aritmetico)
+
+
+estado 72
+
+   65 comp_aritmetico: POR .
+
+    $default  reduce usando la regla 65 (comp_aritmetico)
+
+
+estado 73
+
+   66 comp_aritmetico: DIVIDIDO .
+
+    $default  reduce usando la regla 66 (comp_aritmetico)
+
+
+estado 74
+
+   69 take: TAKE PA comp_aritmetico . PUNTO_COMA CTE_INT PUNTO_COMA CA lista_exp_punto_coma CC PC
+   70     | TAKE PA comp_aritmetico . PUNTO_COMA CTE_INT PUNTO_COMA CA CC PC
+
+    PUNTO_COMA  desplazar e ir al estado 98
+
+
+estado 75
+
+   27 asignacion: ID ASIG $@1 . expresion
+
+    SUMA        desplazar e ir al estado 14
+    RESTA       desplazar e ir al estado 15
+    PA          desplazar e ir al estado 16
+    LONG        desplazar e ir al estado 19
+    TAKE        desplazar e ir al estado 20
+    ID          desplazar e ir al estado 43
+    CTE_FLOAT   desplazar e ir al estado 22
+    CTE_INT     desplazar e ir al estado 23
+    CTE_STRING  desplazar e ir al estado 99
+
+    expresion             ir al estado 100
+    expresion_cadena      ir al estado 101
+    expresion_aritmetica  ir al estado 102
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+
+
+estado 76
+
+   31 expresion_aritmetica: expresion_aritmetica SUMA termino_r .
+   37 termino: termino_r .
+
+    POR       reduce usando la regla 37 (termino)
+    DIVIDIDO  reduce usando la regla 37 (termino)
+    $default  reduce usando la regla 31 (expresion_aritmetica)
+
+
+estado 77
+
+   34 termino_r: termino . POR factor
+   35          | termino . DIVIDIDO factor
+
+    POR       desplazar e ir al estado 57
+    DIVIDIDO  desplazar e ir al estado 58
+
+
+estado 78
+
+   32 expresion_aritmetica: expresion_aritmetica RESTA termino_r .
+   37 termino: termino_r .
+
+    POR       reduce usando la regla 37 (termino)
+    DIVIDIDO  reduce usando la regla 37 (termino)
+    $default  reduce usando la regla 32 (expresion_aritmetica)
+
+
+estado 79
+
+   34 termino_r: termino POR factor .
+
+    $default  reduce usando la regla 34 (termino_r)
+
+
+estado 80
+
+   35 termino_r: termino DIVIDIDO factor .
+
+    $default  reduce usando la regla 35 (termino_r)
+
+
+estado 81
+
+    9 lista_id: lista_id PUNTO_COMA . ID
+
+    ID  desplazar e ir al estado 103
+
+
+estado 82
+
+   53 expresion_logica: NOT termino_logico .
+
+    $default  reduce usando la regla 53 (expresion_logica)
+
+
+estado 83
+
+   25 bloque_while: WHILE rutina_while expresion_logica THEN . rutina_then bloque ENDWHILE
+
+    $default  reduce usando la regla 20 (rutina_then)
+
+    rutina_then  ir al estado 104
+
+
+estado 84
+
+   49 expresion_logica: termino_logico_izq AND . $@3 termino_logico
+
+    $default  reduce usando la regla 48 ($@3)
+
+    $@3  ir al estado 105
+
+
+estado 85
+
+   51 expresion_logica: termino_logico_izq OR . $@4 termino_logico
+
+    $default  reduce usando la regla 50 ($@4)
+
+    $@4  ir al estado 106
+
+
+estado 86
+
+   57 comp_bool: MENOR .
+
+    $default  reduce usando la regla 57 (comp_bool)
+
+
+estado 87
+
+   58 comp_bool: MAYOR .
+
+    $default  reduce usando la regla 58 (comp_bool)
+
+
+estado 88
+
+   59 comp_bool: MENOR_IGUAL .
+
+    $default  reduce usando la regla 59 (comp_bool)
+
+
+estado 89
+
+   60 comp_bool: MAYOR_IGUAL .
+
+    $default  reduce usando la regla 60 (comp_bool)
+
+
+estado 90
+
+   61 comp_bool: IGUAL .
+
+    $default  reduce usando la regla 61 (comp_bool)
+
+
+estado 91
+
+   62 comp_bool: DISTINTO .
+
+    $default  reduce usando la regla 62 (comp_bool)
+
+
+estado 92
+
+   55 termino_logico: expr_aritmetica_izquierda comp_bool . expresion_aritmetica
+
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    expresion_aritmetica  ir al estado 107
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+
+
+estado 93
+
+   22 bloque_if: IF rutina_if expresion_logica THEN . rutina_then bloque ENDIF
+   23          | IF rutina_if expresion_logica THEN . rutina_then bloque ELSE rutina_else bloque ENDIF
+
+    $default  reduce usando la regla 20 (rutina_then)
+
+    rutina_then  ir al estado 108
+
+
+estado 94
+
+   42 factor: PA $@2 expresion_aritmetica PC .
+
+    $default  reduce usando la regla 42 (factor)
+
+
+estado 95
+
+   68 long: LONG PA CA CC . PC
+
+    PC  desplazar e ir al estado 109
+
+
+estado 96
+
+   31 expresion_aritmetica: expresion_aritmetica . SUMA termino_r
+   32                     | expresion_aritmetica . RESTA termino_r
+   72 lista_exp_coma: expresion_aritmetica .
+
+    SUMA   desplazar e ir al estado 55
+    RESTA  desplazar e ir al estado 56
+
+    $default  reduce usando la regla 72 (lista_exp_coma)
+
+
+estado 97
+
+   67 long: LONG PA CA lista_exp_coma . CC PC
+   71 lista_exp_coma: lista_exp_coma . COMA expresion_aritmetica
+
+    CC    desplazar e ir al estado 110
+    COMA  desplazar e ir al estado 111
+
+
+estado 98
+
+   69 take: TAKE PA comp_aritmetico PUNTO_COMA . CTE_INT PUNTO_COMA CA lista_exp_punto_coma CC PC
+   70     | TAKE PA comp_aritmetico PUNTO_COMA . CTE_INT PUNTO_COMA CA CC PC
+
+    CTE_INT  desplazar e ir al estado 112
+
+
+estado 99
+
+   30 expresion_cadena: CTE_STRING .
+
+    $default  reduce usando la regla 30 (expresion_cadena)
+
+
+estado 100
+
+   27 asignacion: ID ASIG $@1 expresion .
+
+    $default  reduce usando la regla 27 (asignacion)
+
+
+estado 101
+
+   28 expresion: expresion_cadena .
+
+    $default  reduce usando la regla 28 (expresion)
+
+
+estado 102
+
+   29 expresion: expresion_aritmetica .
+   31 expresion_aritmetica: expresion_aritmetica . SUMA termino_r
+   32                     | expresion_aritmetica . RESTA termino_r
+
+    SUMA   desplazar e ir al estado 55
+    RESTA  desplazar e ir al estado 56
+
+    SUMA      [reduce usando la regla 29 (expresion)]
+    RESTA     [reduce usando la regla 29 (expresion)]
+    $default  reduce usando la regla 29 (expresion)
+
+
+estado 103
+
+    9 lista_id: lista_id PUNTO_COMA ID .
+
+    $default  reduce usando la regla 9 (lista_id)
+
+
+estado 104
+
+   25 bloque_while: WHILE rutina_while expresion_logica THEN rutina_then . bloque ENDWHILE
+
+    WHILE      desplazar e ir al estado 12
+    IF         desplazar e ir al estado 13
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    GET        desplazar e ir al estado 17
+    DISPLAY    desplazar e ir al estado 18
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 21
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    bloque                ir al estado 113
+    sentencia             ir al estado 25
+    bloque_if             ir al estado 26
+    bloque_while          ir al estado 27
+    asignacion            ir al estado 28
+    expresion_aritmetica  ir al estado 29
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+    lectura               ir al estado 36
+    escritura             ir al estado 37
+
+
+estado 105
+
+   49 expresion_logica: termino_logico_izq AND $@3 . termino_logico
+
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    expresion_aritmetica       ir al estado 62
+    termino_r                  ir al estado 30
+    termino                    ir al estado 31
+    pre                        ir al estado 32
+    factor                     ir al estado 33
+    termino_logico             ir al estado 114
+    expr_aritmetica_izquierda  ir al estado 66
+    long                       ir al estado 34
+    take                       ir al estado 35
+
+
+estado 106
+
+   51 expresion_logica: termino_logico_izq OR $@4 . termino_logico
+
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    expresion_aritmetica       ir al estado 62
+    termino_r                  ir al estado 30
+    termino                    ir al estado 31
+    pre                        ir al estado 32
+    factor                     ir al estado 33
+    termino_logico             ir al estado 115
+    expr_aritmetica_izquierda  ir al estado 66
+    long                       ir al estado 34
+    take                       ir al estado 35
+
+
+estado 107
+
+   31 expresion_aritmetica: expresion_aritmetica . SUMA termino_r
+   32                     | expresion_aritmetica . RESTA termino_r
+   55 termino_logico: expr_aritmetica_izquierda comp_bool expresion_aritmetica .
+
+    SUMA   desplazar e ir al estado 55
+    RESTA  desplazar e ir al estado 56
+
+    $default  reduce usando la regla 55 (termino_logico)
+
+
+estado 108
+
+   22 bloque_if: IF rutina_if expresion_logica THEN rutina_then . bloque ENDIF
+   23          | IF rutina_if expresion_logica THEN rutina_then . bloque ELSE rutina_else bloque ENDIF
+
+    WHILE      desplazar e ir al estado 12
+    IF         desplazar e ir al estado 13
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    GET        desplazar e ir al estado 17
+    DISPLAY    desplazar e ir al estado 18
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 21
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    bloque                ir al estado 116
+    sentencia             ir al estado 25
+    bloque_if             ir al estado 26
+    bloque_while          ir al estado 27
+    asignacion            ir al estado 28
+    expresion_aritmetica  ir al estado 29
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+    lectura               ir al estado 36
+    escritura             ir al estado 37
+
+
+estado 109
+
+   68 long: LONG PA CA CC PC .
+
+    $default  reduce usando la regla 68 (long)
+
+
+estado 110
+
+   67 long: LONG PA CA lista_exp_coma CC . PC
+
+    PC  desplazar e ir al estado 117
+
+
+estado 111
+
+   71 lista_exp_coma: lista_exp_coma COMA . expresion_aritmetica
+
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    expresion_aritmetica  ir al estado 118
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+
+
+estado 112
+
+   69 take: TAKE PA comp_aritmetico PUNTO_COMA CTE_INT . PUNTO_COMA CA lista_exp_punto_coma CC PC
+   70     | TAKE PA comp_aritmetico PUNTO_COMA CTE_INT . PUNTO_COMA CA CC PC
+
+    PUNTO_COMA  desplazar e ir al estado 119
+
+
+estado 113
+
+   11 bloque: bloque . sentencia
+   25 bloque_while: WHILE rutina_while expresion_logica THEN rutina_then bloque . ENDWHILE
+
+    WHILE      desplazar e ir al estado 12
+    ENDWHILE   desplazar e ir al estado 120
+    IF         desplazar e ir al estado 13
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    GET        desplazar e ir al estado 17
+    DISPLAY    desplazar e ir al estado 18
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 21
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    sentencia             ir al estado 54
+    bloque_if             ir al estado 26
+    bloque_while          ir al estado 27
+    asignacion            ir al estado 28
+    expresion_aritmetica  ir al estado 29
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+    lectura               ir al estado 36
+    escritura             ir al estado 37
+
+
+estado 114
+
+   49 expresion_logica: termino_logico_izq AND $@3 termino_logico .
+
+    $default  reduce usando la regla 49 (expresion_logica)
+
+
+estado 115
+
+   51 expresion_logica: termino_logico_izq OR $@4 termino_logico .
+
+    $default  reduce usando la regla 51 (expresion_logica)
+
+
+estado 116
+
+   11 bloque: bloque . sentencia
+   22 bloque_if: IF rutina_if expresion_logica THEN rutina_then bloque . ENDIF
+   23          | IF rutina_if expresion_logica THEN rutina_then bloque . ELSE rutina_else bloque ENDIF
+
+    WHILE      desplazar e ir al estado 12
+    IF         desplazar e ir al estado 13
+    ELSE       desplazar e ir al estado 121
+    ENDIF      desplazar e ir al estado 122
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    GET        desplazar e ir al estado 17
+    DISPLAY    desplazar e ir al estado 18
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 21
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    sentencia             ir al estado 54
+    bloque_if             ir al estado 26
+    bloque_while          ir al estado 27
+    asignacion            ir al estado 28
+    expresion_aritmetica  ir al estado 29
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+    lectura               ir al estado 36
+    escritura             ir al estado 37
+
+
+estado 117
+
+   67 long: LONG PA CA lista_exp_coma CC PC .
+
+    $default  reduce usando la regla 67 (long)
+
+
+estado 118
+
+   31 expresion_aritmetica: expresion_aritmetica . SUMA termino_r
+   32                     | expresion_aritmetica . RESTA termino_r
+   71 lista_exp_coma: lista_exp_coma COMA expresion_aritmetica .
+
+    SUMA   desplazar e ir al estado 55
+    RESTA  desplazar e ir al estado 56
+
+    $default  reduce usando la regla 71 (lista_exp_coma)
+
+
+estado 119
+
+   69 take: TAKE PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA . CA lista_exp_punto_coma CC PC
+   70     | TAKE PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA . CA CC PC
+
+    CA  desplazar e ir al estado 123
+
+
+estado 120
+
+   25 bloque_while: WHILE rutina_while expresion_logica THEN rutina_then bloque ENDWHILE .
+
+    $default  reduce usando la regla 25 (bloque_while)
+
+
+estado 121
+
+   23 bloque_if: IF rutina_if expresion_logica THEN rutina_then bloque ELSE . rutina_else bloque ENDIF
+
+    $default  reduce usando la regla 21 (rutina_else)
+
+    rutina_else  ir al estado 124
+
+
+estado 122
+
+   22 bloque_if: IF rutina_if expresion_logica THEN rutina_then bloque ENDIF .
+
+    $default  reduce usando la regla 22 (bloque_if)
+
+
+estado 123
+
+   69 take: TAKE PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA . lista_exp_punto_coma CC PC
+   70     | TAKE PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA . CC PC
+
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    CC         desplazar e ir al estado 125
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    expresion_aritmetica  ir al estado 126
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+    lista_exp_punto_coma  ir al estado 127
+
+
+estado 124
+
+   23 bloque_if: IF rutina_if expresion_logica THEN rutina_then bloque ELSE rutina_else . bloque ENDIF
+
+    WHILE      desplazar e ir al estado 12
+    IF         desplazar e ir al estado 13
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    GET        desplazar e ir al estado 17
+    DISPLAY    desplazar e ir al estado 18
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 21
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    bloque                ir al estado 128
+    sentencia             ir al estado 25
+    bloque_if             ir al estado 26
+    bloque_while          ir al estado 27
+    asignacion            ir al estado 28
+    expresion_aritmetica  ir al estado 29
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+    lectura               ir al estado 36
+    escritura             ir al estado 37
+
+
+estado 125
+
+   70 take: TAKE PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA CC . PC
+
+    PC  desplazar e ir al estado 129
+
+
+estado 126
+
+   31 expresion_aritmetica: expresion_aritmetica . SUMA termino_r
+   32                     | expresion_aritmetica . RESTA termino_r
+   74 lista_exp_punto_coma: expresion_aritmetica .
+
+    SUMA   desplazar e ir al estado 55
+    RESTA  desplazar e ir al estado 56
+
+    $default  reduce usando la regla 74 (lista_exp_punto_coma)
+
+
+estado 127
+
+   69 take: TAKE PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA lista_exp_punto_coma . CC PC
+   73 lista_exp_punto_coma: lista_exp_punto_coma . PUNTO_COMA expresion_aritmetica
+
+    CC          desplazar e ir al estado 130
+    PUNTO_COMA  desplazar e ir al estado 131
+
+
+estado 128
+
+   11 bloque: bloque . sentencia
+   23 bloque_if: IF rutina_if expresion_logica THEN rutina_then bloque ELSE rutina_else bloque . ENDIF
+
+    WHILE      desplazar e ir al estado 12
+    IF         desplazar e ir al estado 13
+    ENDIF      desplazar e ir al estado 132
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    GET        desplazar e ir al estado 17
+    DISPLAY    desplazar e ir al estado 18
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 21
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    sentencia             ir al estado 54
+    bloque_if             ir al estado 26
+    bloque_while          ir al estado 27
+    asignacion            ir al estado 28
+    expresion_aritmetica  ir al estado 29
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+    lectura               ir al estado 36
+    escritura             ir al estado 37
+
+
+estado 129
+
+   70 take: TAKE PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA CC PC .
+
+    $default  reduce usando la regla 70 (take)
+
+
+estado 130
+
+   69 take: TAKE PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA lista_exp_punto_coma CC . PC
+
+    PC  desplazar e ir al estado 133
+
+
+estado 131
+
+   73 lista_exp_punto_coma: lista_exp_punto_coma PUNTO_COMA . expresion_aritmetica
+
+    SUMA       desplazar e ir al estado 14
+    RESTA      desplazar e ir al estado 15
+    PA         desplazar e ir al estado 16
+    LONG       desplazar e ir al estado 19
+    TAKE       desplazar e ir al estado 20
+    ID         desplazar e ir al estado 43
+    CTE_FLOAT  desplazar e ir al estado 22
+    CTE_INT    desplazar e ir al estado 23
+
+    expresion_aritmetica  ir al estado 134
+    termino_r             ir al estado 30
+    termino               ir al estado 31
+    pre                   ir al estado 32
+    factor                ir al estado 33
+    long                  ir al estado 34
+    take                  ir al estado 35
+
+
+estado 132
+
+   23 bloque_if: IF rutina_if expresion_logica THEN rutina_then bloque ELSE rutina_else bloque ENDIF .
+
+    $default  reduce usando la regla 23 (bloque_if)
+
+
+estado 133
+
+   69 take: TAKE PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA lista_exp_punto_coma CC PC .
+
+    $default  reduce usando la regla 69 (take)
+
+
+estado 134
+
+   31 expresion_aritmetica: expresion_aritmetica . SUMA termino_r
+   32                     | expresion_aritmetica . RESTA termino_r
+   73 lista_exp_punto_coma: lista_exp_punto_coma PUNTO_COMA expresion_aritmetica .
+
+    SUMA   desplazar e ir al estado 55
+    RESTA  desplazar e ir al estado 56
+
+    $default  reduce usando la regla 73 (lista_exp_punto_coma)
