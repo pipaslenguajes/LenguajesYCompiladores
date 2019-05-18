@@ -14,18 +14,20 @@
  *	Brian Bayarri, Nicolas Bedetti, Aylen Hoz, German Lopez, Julian Morganella
  *      
  */
-%{
+%code requires {
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <conio.h>
 	#include <string.h>
 	#include "y.tab.h"
 
-	#include "tabla_simbolos.h"
-	#include "tercetos.h"
-	#include "sentencias_control.h"
-	#include "take_long.h"
+	#include "./tabla_simbolos.h"
+	#include "./tercetos.h"
+	#include "./sentencias_control.h"
+	#include "./take_long.h"
+}
 
+%{
 	int yystopparser=0;
 	FILE  *yyin;	
 	
