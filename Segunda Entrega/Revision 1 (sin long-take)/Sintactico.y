@@ -288,22 +288,22 @@ expresion_logica: termino_logico { and_index++; saltos_and_a_completar[and_index
 		 ;
 
 termino_logico: expresion_aritmetica { IndComparacion = IndExpresion; } MENOR expresion_aritmetica { crearTerceto_cii("CMP", IndComparacion, IndExpresion);
-				if(es_negado == 0) { strcpy(valor_comparacion, "BGE"); } else { strcpy(valor_comparacion, "BLT"); }
+				if(es_negado == 0) { memcpy(valor_comparacion, "BGE",sizeof(valor_comparacion)); } else { memcpy(valor_comparacion, "BLT",sizeof(valor_comparacion)); }
 			 }
 		   | expresion_aritmetica { IndComparacion = IndExpresion; } MENOR_IGUAL expresion_aritmetica { crearTerceto_cii("CMP", IndComparacion, IndExpresion);
-				if(es_negado == 0) { strcpy(valor_comparacion, "BGT"); } else { strcpy(valor_comparacion, "BLE"); }
+				if(es_negado == 0) { memcpy(valor_comparacion, "BGT",sizeof(valor_comparacion)); } else { memcpy(valor_comparacion, "BLE",sizeof(valor_comparacion)); }
 			 }
 		   | expresion_aritmetica { IndComparacion = IndExpresion; } MAYOR expresion_aritmetica       { crearTerceto_cii("CMP", IndComparacion, IndExpresion);
-		   		if(es_negado == 0) { strcpy(valor_comparacion, "BLE"); } else { strcpy(valor_comparacion, "BGT"); }
+		   		if(es_negado == 0) { memcpy(valor_comparacion, "BLE",sizeof(valor_comparacion)); } else { memcpy(valor_comparacion, "BGT",sizeof(valor_comparacion)); }
 			 }
 		   | expresion_aritmetica { IndComparacion = IndExpresion; } MAYOR_IGUAL expresion_aritmetica { crearTerceto_cii("CMP", IndComparacion, IndExpresion);
-		   		if(es_negado == 0) { strcpy(valor_comparacion, "BLT"); } else { strcpy(valor_comparacion, "BGE"); }
+		   		if(es_negado == 0) { memcpy(valor_comparacion, "BLT",sizeof(valor_comparacion)); } else { memcpy(valor_comparacion, "BGE",sizeof(valor_comparacion)); }
 			 }
 		   | expresion_aritmetica { IndComparacion = IndExpresion; } IGUAL expresion_aritmetica       { crearTerceto_cii("CMP", IndComparacion, IndExpresion);
-		   		if(es_negado == 0) { strcpy(valor_comparacion, "BNE"); } else { strcpy(valor_comparacion, "BEQ"); }
+		   		if(es_negado == 0) { memcpy(valor_comparacion, "BNE",sizeof(valor_comparacion)); } else { memcpy(valor_comparacion, "BEQ",sizeof(valor_comparacion)); }
 			 }
 		   | expresion_aritmetica { IndComparacion = IndExpresion; } DISTINTO expresion_aritmetica    { crearTerceto_cii("CMP", IndComparacion, IndExpresion);
-		   		if(es_negado == 0) { strcpy(valor_comparacion, "BEQ"); } else { strcpy(valor_comparacion, "BNE"); }
+		   		if(es_negado == 0) { memcpy(valor_comparacion, "BEQ",sizeof(valor_comparacion)); } else { memcpy(valor_comparacion, "BNE",sizeof(valor_comparacion)); }
 			 }
 		   ;
 		   
