@@ -1,0 +1,22 @@
+START
+	DEFVAR
+	INT : numero1; numero2; numero3; resultado; a
+	STRING : cadena
+	FLOAT : real
+	ENDDEF
+	
+	resultado := numero1 / numero2
+	DISPLAY resultado
+	
+	*/Ejemplos LONG/*
+	numero1 := long([numero1,numero2,numero3])
+	
+	IF long([numero1,numero2,numero3]) > 2 
+	THEN
+	numero1 := 2
+	ENDIF
+	
+	*/Ejemplo de GET/*
+	GET numero1
+	
+END
