@@ -511,6 +511,9 @@ char *yytext;
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <float.h>
+#include <limits.h>
+#include <conio.h>
 #include "y.tab.h"
 
 FILE *yyin;
@@ -545,13 +548,16 @@ void mensaje_error();
 int nombre_existe_en_ts(char *id);
 void existe_en_ts(char *id);
 void insertar_tabla_simbolos(char *nombre, char *tipo, char *valor, char *longitud);
+void insertar_ts_si_no_existe(char *nombre, char *tipo, char *valor, char *longitud);
 void save_reg_ts();
 void mostrar_ts();
 void guardarTipos(int variableActual, char listaVariables[][20], char tipoActual[]);
 
-void cota_error(char* mensaje);
+int tipoDeDato(int pos);
 
-#line 555 "lex.yy.c"
+void generaSegmDatosAsm(FILE* pf_asm);
+
+#line 561 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -702,10 +708,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 92 "Lexico.l"
+#line 98 "Lexico.l"
 
 
-#line 709 "lex.yy.c"
+#line 715 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -798,77 +804,77 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 94 "Lexico.l"
+#line 100 "Lexico.l"
 { return START; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 96 "Lexico.l"
+#line 102 "Lexico.l"
 { return END; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 98 "Lexico.l"
+#line 104 "Lexico.l"
 { return IF; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 100 "Lexico.l"
+#line 106 "Lexico.l"
 { return ELSE; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 102 "Lexico.l"
+#line 108 "Lexico.l"
 { return THEN; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 104 "Lexico.l"
+#line 110 "Lexico.l"
 { return ENDIF; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 106 "Lexico.l"
+#line 112 "Lexico.l"
 { return WHILE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 108 "Lexico.l"
+#line 114 "Lexico.l"
 { return ENDWHILE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 110 "Lexico.l"
+#line 116 "Lexico.l"
 { return LONG; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 112 "Lexico.l"
+#line 118 "Lexico.l"
 { return TAKE; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 114 "Lexico.l"
+#line 120 "Lexico.l"
 { return DEFVAR; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 116 "Lexico.l"
+#line 122 "Lexico.l"
 { return ENDDEF; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 118 "Lexico.l"
+#line 124 "Lexico.l"
 { return DISPLAY; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 120 "Lexico.l"
+#line 126 "Lexico.l"
 { return GET; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 122 "Lexico.l"
+#line 128 "Lexico.l"
 { 
                             yylval.valor_int = atoi( yytext );
                             return INT;
@@ -876,7 +882,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 127 "Lexico.l"
+#line 133 "Lexico.l"
 { 
                             yylval.valor_float = atof( yytext );
                             return FLOAT;
@@ -884,7 +890,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 132 "Lexico.l"
+#line 138 "Lexico.l"
 { 
                             yylval.valor_string = strdup( yytext );
                             return STRING;
@@ -892,112 +898,112 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 137 "Lexico.l"
+#line 143 "Lexico.l"
 { return DOS_PUNTOS; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 139 "Lexico.l"
+#line 145 "Lexico.l"
 { return PUNTO_COMA; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 141 "Lexico.l"
+#line 147 "Lexico.l"
 { return COMA; }                          
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 143 "Lexico.l"
+#line 149 "Lexico.l"
 { return SUMA; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 145 "Lexico.l"
+#line 151 "Lexico.l"
 { return RESTA; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 147 "Lexico.l"
+#line 153 "Lexico.l"
 { return POR; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 149 "Lexico.l"
+#line 155 "Lexico.l"
 { return DIVIDIDO; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 151 "Lexico.l"
+#line 157 "Lexico.l"
 { return AND; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 153 "Lexico.l"
+#line 159 "Lexico.l"
 { return OR; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 155 "Lexico.l"
+#line 161 "Lexico.l"
 { return NOT; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 157 "Lexico.l"
+#line 163 "Lexico.l"
 { return ASIG; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 159 "Lexico.l"
+#line 165 "Lexico.l"
 { return MENOR; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 161 "Lexico.l"
+#line 167 "Lexico.l"
 { return MENOR_IGUAL; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 163 "Lexico.l"
+#line 169 "Lexico.l"
 { return MAYOR; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 165 "Lexico.l"
+#line 171 "Lexico.l"
 { return MAYOR_IGUAL; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 167 "Lexico.l"
+#line 173 "Lexico.l"
 { return IGUAL; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 169 "Lexico.l"
+#line 175 "Lexico.l"
 { return DISTINTO; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 171 "Lexico.l"
+#line 177 "Lexico.l"
 { return PA; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 173 "Lexico.l"
+#line 179 "Lexico.l"
 { return PC; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 175 "Lexico.l"
+#line 181 "Lexico.l"
 { return CA; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 177 "Lexico.l"
+#line 183 "Lexico.l"
 { return CC; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 179 "Lexico.l"
+#line 185 "Lexico.l"
 { 
 							yylval.valor_string = strdup(yytext);; 
 							validarID(yylval.valor_string); 
@@ -1006,7 +1012,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 185 "Lexico.l"
+#line 191 "Lexico.l"
 {
 							yylval.valor_float = atof(yytext); 
 							validarReal(yylval.valor_float); 
@@ -1016,7 +1022,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 192 "Lexico.l"
+#line 198 "Lexico.l"
 {
 							yylval.valor_int = atoi(yytext);
 							validarInt(yylval.valor_int); 
@@ -1026,7 +1032,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 199 "Lexico.l"
+#line 205 "Lexico.l"
 {	
 							strcpy(yylval.valor_string,yytext); 
 							validarString(yylval.valor_string); 
@@ -1036,17 +1042,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 206 "Lexico.l"
+#line 212 "Lexico.l"
 {	
 							printf("_____COMENTARIO: %s_____",yytext);
 						}			
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 209 "Lexico.l"
+#line 215 "Lexico.l"
 ECHO;
 	YY_BREAK
-#line 1050 "lex.yy.c"
+#line 1056 "lex.yy.c"
 			case YY_STATE_EOF(INITIAL):
 				yyterminate();
 
@@ -1930,56 +1936,8 @@ int main()
 	return 0;
 	}
 #endif
-#line 209 "Lexico.l"
+#line 215 "Lexico.l"
 
-
-/* Funcion para validar identificador */
-int validarID(char *str)
-{
-    int largo = strlen(str);
-	if(largo > 30)
-	{
-		printf("Error lexico: El nombre de variable excede el limite permitido -> Linea %d\n", yylineno);
-		fprintf(stderr, "Fin de ejecucion.\n");
-		system ("Pause");
-		exit (1);
-	}
-	return 1;
-}
-
-int insertar_id_en_ts(char *id)
-{
-	if (nombre_existe_en_ts(id) == -1) 
-		insertar_tabla_simbolos(id, "","","-");
-	return 1;
-}
-
-/* Funcion para validar float */
-int validarReal(float real)
-{
-
-	if(real < -3.40282347e+38F || real > 3.40282347e+38F)
-	{
-		printf("Error lexico: El valor de un flotante excede el limite permitido -> Linea %d\n", yylineno);
-		fprintf(stderr, "Fin de ejecucion.\n");
-		system ("Pause");
-		exit (1);
-	}
-	return 1;
-}
-
-int insertar_ctereal_en_ts(float flotante)
-{
-	char *valor = (char*) malloc(sizeof(float));
-	snprintf(valor, sizeof(float), "%f", flotante);
-	char *nombre = (char*) malloc(sizeof(float)+1);
-	*nombre = '\0';
-	strcat(nombre, "_");
-	strcat(nombre, valor);
-	if (nombre_existe_en_ts(nombre) == -1)
-		insertar_tabla_simbolos(nombre, "CTE_FLOAT", valor, "-");
-	return 1;
-}
 
 /* Funcion para validar el rango de enteros */
 int validarInt(int entero)
@@ -2027,7 +1985,15 @@ int insertar_ctestring_en_ts(char *str)
 	*nombre = '\0';
 	strcat(nombre, "_");
 	strcat(nombre, str);
-	
+	char *original = nombre;
+	while(*nombre != '\0') {
+		if (*nombre == ' ' || *nombre == '"' || *nombre == '!' 
+				|| *nombre == '.') {
+			*nombre = '_';
+		}
+		nombre++;
+	}
+	nombre = original;
 	char *longitud = (char*) malloc(10*sizeof(char));	
 	itoa(strlen(str), longitud, 10);
 
@@ -2035,6 +2001,73 @@ int insertar_ctestring_en_ts(char *str)
 		insertar_tabla_simbolos(nombre, "CTE_STRING", str, longitud);
 	return 1;
 }
+
+/* Funcion para validar float */
+int validarReal(float real)
+{
+
+	if(real < -3.40282347e+38F || real > 3.40282347e+38F)
+	{
+		printf("Error lexico: El valor de un flotante excede el limite permitido -> Linea %d\n", yylineno);
+		fprintf(stderr, "Fin de ejecucion.\n");
+		system ("Pause");
+		exit (1);
+	}
+	return 1;
+}
+
+int insertar_ctereal_en_ts(float flotante)
+{
+	char *valor = (char*) malloc(sizeof(float));
+	snprintf(valor, sizeof(float), "%f", flotante);
+	char *nombre = (char*) malloc(sizeof(float)+1);
+	*nombre = '\0';
+	strcat(nombre, "_");
+	strcat(nombre, valor);
+	char *original = nombre;
+	while (*nombre != '\0')
+	{
+		if (*nombre == '.') {
+			*nombre = '_';
+		}
+		nombre++;
+	};
+	nombre = original;
+
+	char *longitud = (char*) malloc(10*sizeof(char));	
+	itoa(strlen(valor), longitud, 10);
+	if (nombre_existe_en_ts(nombre) == -1)
+		insertar_tabla_simbolos(nombre, "CTE_FLOAT", valor, "-");
+	return 1;
+}
+
+
+/* Funcion para validar identificador */
+int validarID(char *str)
+{
+    int largo = strlen(str);
+	if(largo > 30)
+	{
+		printf("Error lexico: El nombre de variable excede el limite permitido -> Linea %d\n", yylineno);
+		fprintf(stderr, "Fin de ejecucion.\n");
+		system ("Pause");
+		exit (1);
+	}
+	return 1;
+}
+
+int insertar_id_en_ts(char *id)
+{
+	if (nombre_existe_en_ts(id) == -1) 
+		insertar_tabla_simbolos(id, "","","-");
+	return 1;
+}
+
+
+
+
+
+
 
 int nombre_existe_en_ts(char *id) 
 {
@@ -2069,9 +2102,18 @@ void insertar_tabla_simbolos(char *nombre, char *tipo, char *valor, char *longit
 	cant_reg++;
 }
 
+void insertar_ts_si_no_existe(char *nombre, char *tipo, char *valor, char *longitud) {
+	char* aux = (char*) malloc(10*sizeof(char));
+	*aux='\0';
+	strcpy(aux, nombre);
+	if(nombre_existe_en_ts(aux)==-1) {
+		insertar_tabla_simbolos(aux,tipo,valor,longitud);
+	}
+}
+
 void save_reg_ts()
 {
-	FILE *file = fopen("ts.txt", "a");
+	FILE *file = fopen("ts.txt", "w");
 	
 	if(file == NULL) 
 	{
@@ -2087,6 +2129,19 @@ void save_reg_ts()
 		}		
 		fclose(file);
 	}
+}
+
+int tipoDeDato(int pos) {
+	char * tipoDato = tabla_simbolos[pos].tipo;
+	
+	if(strcmpi("INT", tipoDato) == 0 || strcmpi("CTE_INT", tipoDato) == 0 )
+		return 1;
+
+	if(strcmpi("REAL", tipoDato) == 0 || strcmpi("CTE_FLOAT", tipoDato) == 0)
+		return 2;
+
+	if(strcmpi("STRING", tipoDato) == 0 || strcmpi("CTE_STRING", tipoDato) == 0)
+		return 3;
 }
 
 void mostrar_ts()
@@ -2113,5 +2168,42 @@ void guardarTipos(int variableActual, char listaVariables[][20], char tipoActual
 	  tabla_simbolos[pos].tipo = tipoDato;
 	}
   }
+}
+
+/*
+	Generacion segmento datos a partir de la ts
+*/
+void generaSegmDatosAsm(FILE* pf_asm)
+{
+	int i;
+
+	fprintf(pf_asm, "\n.DATA \n");
+
+
+	for(i=0; i<cant_reg; i++)
+	{
+		struct registro_ts reg = tabla_simbolos[i];
+		int tipo = tipoDeDato(i);
+		if(strcmpi(reg.tipo, "REAL") == 0 || strcmpi(reg.tipo, "INT") == 0)
+		{
+			fprintf(pf_asm, "\t%s dd ?\t ; Declaracion de Variable Numerica\n", getNombreAsm(reg.nombre));
+		}
+		else if(strcmpi(reg.tipo, "STRING") == 0)
+		{
+			fprintf(pf_asm, "\t%s db 30 dup (?),\"$\"\t;Declaracion de Variable String\n", getNombreAsm(reg.nombre));
+		}
+		else if(strcmpi(reg.tipo, "CTE_STRING") == 0)
+		{
+			fprintf(pf_asm, "\t%s db %s, \"$\", 30 dup (?)\t;Declaracion de Constant String\n", getNombreAsm(reg.nombre), reg.valor);
+		}
+		else if(strcmpi(reg.tipo, "CTE_INT") == 0 || strcmpi(reg.tipo, "CTE_FLOAT") == 0)
+		{
+			if(strstr(reg.valor,".")){
+				fprintf(pf_asm, "\t%s dd %s\t;Declaracion de Constant Number\n", getNombreAsm(reg.nombre), reg.valor);
+			}else{
+				fprintf(pf_asm, "\t%s dd %s.0\t;Declaracion de Constant Number\n", getNombreAsm(reg.nombre), reg.valor);
+			}
+		}
+	}
 }
 
