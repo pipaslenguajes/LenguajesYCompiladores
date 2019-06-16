@@ -810,7 +810,7 @@ void genera_asm()
 	char ult_op1_cmp[30];
 	strcpy(ult_op1_cmp, "");
 	char op1_guardado[30];
-
+printf("HOLA1\n");
 	if((pf_asm = fopen(file_asm, "w")) == NULL)
 	{
 		printf("Error al generar el asembler \n");
@@ -823,7 +823,7 @@ void genera_asm()
 	 fprintf(pf_asm, ".MODEL	LARGE \n");
 	 fprintf(pf_asm, ".386\n");
 	 fprintf(pf_asm, ".STACK 200h \n");
-
+	 generaSegmDatosAsm(pf_asm);
 	 fprintf(pf_asm, ".CODE \n");
 	 fprintf(pf_asm, "MAIN:\n");
 	 fprintf(pf_asm, "\n");
@@ -865,7 +865,8 @@ void genera_asm()
 			}
 		}	
 	}
-	
+	printf("HOLA2 lenght: %d\n",terceto_index);
+
 	// Armo el assembler
 	for (i = 0; i < terceto_index; i++) 
 	{
@@ -884,19 +885,21 @@ void genera_asm()
 			opUnaria = 0;
 			opBinaria = 1;
 		}
-
+printf("HOLA3.%d.1\n",i);
 		for (j=1;j<=cant_etiquetas;j++) {
 			if (i == lista_etiquetas[j])
 			{
 				sprintf(etiqueta_aux, "ETIQ_%d", lista_etiquetas[j]);
 				fprintf(pf_asm, "%s: \n", etiqueta_aux);
+				printf("HOLA3.%d.14\n",i);
 			}
 		}
-
+printf("HOLA3.%d.2\n",i);
 
 		if (opSimple == 1) {
 			// Ids, constantes
 			cant_op++;
+			printf("HOLA3.%d.12\n",i);
 			strcpy(lista_operandos_assembler[cant_op], tercetos[i].uno);
 		} 
 		else if (opUnaria == 1) {
@@ -905,6 +908,7 @@ void genera_asm()
 			if (strcmp("WRITE", tercetos[i].uno) == 0) 
 			{	
 				int tipo = buscarTipoTS(tercetos[atoi(tercetos[i].dos)].uno);
+				printf("HOLA3.%d.11\n",i);
 				if (tipo == Float) 
 				{
 					fprintf(pf_asm, "\t DisplayFloat %s,2 \n", getNombreAsm(tercetos[atoi(tercetos[i].dos)].uno));
@@ -917,6 +921,7 @@ void genera_asm()
 					fprintf(pf_asm, "\t DisplayString %s \n", getNombreAsm(tercetos[atoi(tercetos[i].dos)].uno));
 				}
 				// Siempre inserto nueva linea despues de mostrar msj
+				printf("HOLA3.%d.12\n",i);
 				fprintf(pf_asm, "\t newLine \n");
 			}
 			else if (strcmp("READ", tercetos[i].uno) == 0) 
@@ -928,16 +933,19 @@ void genera_asm()
 				} 
 				else if (tipo == Integer) 
 				{
+				printf("HOLA3.%d.9\n",i);
 					// pongo getfloat para manejar todo con fld en las operaciones
 					fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(tercetos[atoi(tercetos[i].dos)].uno));
 				}	
 				else 
 				{
+				printf("HOLA3.%d.10\n",i);
 					fprintf(pf_asm, "\t GetString %s\n", getNombreAsm(tercetos[atoi(tercetos[i].dos)].uno));
 				}
 			}
 			else // saltos
 			{
+			printf("HOLA3.%d.7\n",i);
 				char *codigo = getCodOp(tercetos[i].uno);
 				sprintf(etiqueta_aux, "ETIQ_%d", atoi(tercetos[i].dos));
 				if (atoi(tercetos[i].dos) >= terceto_index) 
@@ -945,15 +953,18 @@ void genera_asm()
 					agregar_etiqueta_final_nro = atoi(tercetos[i].dos);
 				}
 				fflush(pf_asm); 
+				printf("HOLA3.%d.8\n",i);
 				fprintf(pf_asm, "\t %s %s \t;Si cumple la condicion salto a la etiqueta\n", codigo, etiqueta_aux);
+				printf("HOLA3.%d.81\n",i);
 			}
+			printf("HOLA3.%d.82\n",i);
  		}
 		else {
 			// Expresiones ; Comparaciones ; Asignacion
 			char *op2 = (char*) malloc(100*sizeof(char));
 			strcpy(op2, lista_operandos_assembler[cant_op]);
 			cant_op--;
-
+printf("HOLA3.%d.6\n",i);
 			char *op1 = (char*) malloc(100*sizeof(char));
 			if (strcmp(tercetos[i].uno, "CMP" ) == 0 && strcmp(ult_op1_cmp, tercetos[i].dos) == 0 )
 			{
@@ -965,7 +976,7 @@ void genera_asm()
 				cant_op--;
 				strcpy(op1_guardado, op1);
 			}
-			
+			printf("HOLA3.%d.5\n",i);
 			if (strcmp(tercetos[i].uno, "=" ) == 0)
 			{
 				int tipo = buscarTipoTS(tercetos[atoi(tercetos[i].dos)].uno);
@@ -1015,7 +1026,7 @@ void genera_asm()
 				fprintf(pf_asm, "\t FLD %s \t;Cargo operando 1\n", getNombreAsm(op1));
 				fprintf(pf_asm, "\t FLD %s \t;Cargo operando 2\n", getNombreAsm(op2));
 				fflush(pf_asm);
-
+printf("HOLA3.%d.4\n",i);
 				fprintf(pf_asm, "\t %s \t\t;Opero\n", getCodOp(tercetos[i].uno));
 				fprintf(pf_asm, "\t FSTP %s \t;Almaceno el resultado en una var auxiliar\n", getNombreAsm(aux));
 				
@@ -1024,19 +1035,24 @@ void genera_asm()
 			}
 			
 		}
+		printf("HOLA3.%d.323\n",i);
 	}
+printf("HOLA3\n");
 
+	generaSegmDatosAsm(pf_asm);
+	printf("HOLA4\n");
 	if(agregar_etiqueta_final_nro != -1) {
+	printf("HOLA2.2\n");
 		sprintf(etiqueta_aux, "ETIQ_%d", agregar_etiqueta_final_nro);
+		printf("HOLA2.3\n");
 		fprintf(pf_asm, "%s: \n", etiqueta_aux);
+		printf("HOLA2.4\n");
 	}
 
+printf("HOLA2.5\n");
 	/*generamos el final */
 	fprintf(pf_asm, "\t mov AX, 4C00h \t ; Genera la interrupcion 21h\n");
 	fprintf(pf_asm, "\t int 21h \t ; Genera la interrupcion 21h\n");
-
-	generaSegmDatosAsm(pf_asm);
-
 	fprintf(pf_asm, "END MAIN\n");
 	fclose(pf_asm);
 
@@ -1099,7 +1115,7 @@ char* getCodOp(char* token)
 	Obtiene los nombres para assembler
 */
 char* getNombreAsm(char *cte_o_id) {
-	char nombreAsm[200];
+	char* nombreAsm = (char*) malloc(sizeof(char)*200);
 	nombreAsm[0] = '\0';
 	strcat(nombreAsm, "@"); // prefijo agregado
 	
