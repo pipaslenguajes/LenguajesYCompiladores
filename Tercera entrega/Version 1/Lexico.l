@@ -412,7 +412,7 @@ int tipoDeDato(int pos) {
 	if(strcmpi("INT", tipoDato) == 0 || strcmpi("CTE_INT", tipoDato) == 0 )
 		return 1;
 
-	if(strcmpi("REAL", tipoDato) == 0 || strcmpi("CTE_FLOAT", tipoDato) == 0)
+	if(strcmpi("FLOAT", tipoDato) == 0 || strcmpi("CTE_FLOAT", tipoDato) == 0)
 		return 2;
 
 	if(strcmpi("STRING", tipoDato) == 0 || strcmpi("CTE_STRING", tipoDato) == 0)
