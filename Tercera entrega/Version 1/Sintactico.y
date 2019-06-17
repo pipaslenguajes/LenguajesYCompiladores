@@ -905,7 +905,7 @@ printf("HOLA3.%d.2\n",i);
 		else if (opUnaria == 1) {
 			// Saltos, write, read
 			
-			if (strcmp("WRITE", tercetos[i].uno) == 0) 
+			if (strcmp("DISPLAY", tercetos[i].uno) == 0) 
 			{	
 				int tipo = buscarTipoTS(tercetos[atoi(tercetos[i].dos)].uno);
 				printf("HOLA3.%d.11\n",i);
@@ -924,7 +924,7 @@ printf("HOLA3.%d.2\n",i);
 				printf("HOLA3.%d.12\n",i);
 				fprintf(pf_asm, "\t newLine \n");
 			}
-			else if (strcmp("READ", tercetos[i].uno) == 0) 
+			else if (strcmp("GET", tercetos[i].uno) == 0) 
 			{
 				int tipo = buscarTipoTS(tercetos[atoi(tercetos[i].dos)].uno);
 				if (tipo == Float) 
@@ -1021,7 +1021,7 @@ printf("HOLA3.%d.6\n",i);
 					yyerror("Ops! No estan soportadas las operaciones entre cadenas\n");
 				}
 				sprintf(aux, "_aux%d", i); // auxiliar relacionado al terceto
-				insertar_ts_si_no_existe(aux, "REAL", "", "");
+				insertar_ts_si_no_existe(aux, "FLOAT", "", "");
 				fflush(pf_asm);
 				fprintf(pf_asm, "\t FLD %s \t;Cargo operando 1\n", getNombreAsm(op1));
 				fprintf(pf_asm, "\t FLD %s \t;Cargo operando 2\n", getNombreAsm(op2));
@@ -1038,8 +1038,6 @@ printf("HOLA3.%d.4\n",i);
 		printf("HOLA3.%d.323\n",i);
 	}
 printf("HOLA3\n");
-
-	generaSegmDatosAsm(pf_asm);
 	printf("HOLA4\n");
 	if(agregar_etiqueta_final_nro != -1) {
 	printf("HOLA2.2\n");

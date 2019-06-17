@@ -230,9 +230,9 @@ int validarInt(int entero)
 
 int insertar_cteint_en_ts(int entero)
 {
-	char *valor = (char*) malloc(sizeof(int));
+	char *valor = (char*) malloc(sizeof(char));
 	itoa(entero, valor, 10);
-	char *nombre = (char*) malloc(sizeof(int)+1);
+	char *nombre = (char*) malloc(sizeof(char)*10+1);
 	*nombre = '\0';
 	strcat(nombre, "_");
 	strcat(nombre, valor);
@@ -450,16 +450,18 @@ void guardarTipos(int variableActual, char listaVariables[][20], char tipoActual
 */
 void generaSegmDatosAsm(FILE* pf_asm)
 {
+printf("HOLA2\n");	
 	int i;
 
 	fprintf(pf_asm, "\n.DATA \n");
-
+printf("HOLA4\n");
 
 	for(i=0; i<cant_reg; i++)
 	{
+		printf("HOLA %d \n",i);
 		struct registro_ts reg = tabla_simbolos[i];
 		int tipo = tipoDeDato(i);
-		if(strcmpi(reg.tipo, "REAL") == 0 || strcmpi(reg.tipo, "INT") == 0)
+		if(strcmpi(reg.tipo, "FLOAT") == 0 || strcmpi(reg.tipo, "INT") == 0)
 		{
 			fprintf(pf_asm, "\t%s dd ?\t ; Declaracion de Variable Numerica\n", getNombreAsm(reg.nombre));
 		}
