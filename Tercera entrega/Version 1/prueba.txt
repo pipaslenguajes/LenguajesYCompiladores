@@ -5,6 +5,10 @@ START
 	FLOAT : real
 	ENDDEF
 	
-	resultado := numero1 / numero2
-	DISPLAY resultado
+	*/Ejemplo TAKE/*
+	numero2 := TAKE(*; 3;[2;12;24;48])
+	numero1 := 12
+	real := 3.5 + 2.5
+	DISPLAY numero2
+
 END
