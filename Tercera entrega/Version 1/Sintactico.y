@@ -430,7 +430,7 @@ take:
 																											}
 																											cadenaIndice(IndTake,cadenaTake);
 																											IndTake = crearTerceto_ccc(cadenaTake,"","");
-																											
+																											posicion_numero_take = 0;
 																										}
 	|TAKE PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA CC PC									{
 																										printf("Regla 55: TAKE es TAKE PA comp_aritmetico PUNTO_COMA CTE_INT PUNTO_COMA CA CC PC");
@@ -451,14 +451,16 @@ lista_exp_coma:
 lista_exp_punto_coma:
 	lista_exp_punto_coma PUNTO_COMA CTE_INT            {
 															printf("Regla 58: lista_exp_punto_coma es lista_exp_punto_coma PUNTO_COMA expresion_aritmetica\n");
-															posicion_numero_take++;
+															//posicion_numero_take++;
 															verificarTipoDato(Integer);
 															take_numeros[posicion_numero_take] = crearTerceto_icc($3, "", "");
+															posicion_numero_take++;
 														}
     | CTE_INT	                              			{
 															printf("Regla 59: lista_exp_punto_coma es expresion_aritmetica\n");
-															posicion_numero_take = 0;
+															//posicion_numero_take = 0;
 															take_numeros[posicion_numero_take] = crearTerceto_icc($1, "", "");
+															posicion_numero_take++;
 														};
 
 
