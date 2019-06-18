@@ -134,6 +134,7 @@ int cant_op = 0;
 void genera_asm();
 char* getNombreAsm(char *cte_o_id);
 char* getCodOp(char*);
+char * buscaDatoEnTerceto(int datoUNODOSTRES, int i);
 /**** Fin assembler ****/
 %}
 
@@ -448,16 +449,17 @@ lista_exp_coma:
 														
 
 lista_exp_punto_coma:
-	lista_exp_punto_coma PUNTO_COMA expresion_aritmetica            {
-																		printf("Regla 58: lista_exp_punto_coma es lista_exp_punto_coma PUNTO_COMA expresion_aritmetica\n");
-																		posicion_numero_take++;
-																		take_numeros[posicion_numero_take] = IndExpresion;
-																	}
-    | expresion_aritmetica                              			{
-																		printf("Regla 59: lista_exp_punto_coma es expresion_aritmetica\n");
-																		posicion_numero_take = 0;
-																		take_numeros[posicion_numero_take] = IndExpresion;
-																	};
+	lista_exp_punto_coma PUNTO_COMA CTE_INT            {
+															printf("Regla 58: lista_exp_punto_coma es lista_exp_punto_coma PUNTO_COMA expresion_aritmetica\n");
+															posicion_numero_take++;
+															verificarTipoDato(Integer);
+															take_numeros[posicion_numero_take] = crearTerceto_icc($3, "", "");
+														}
+    | CTE_INT	                              			{
+															printf("Regla 59: lista_exp_punto_coma es expresion_aritmetica\n");
+															posicion_numero_take = 0;
+															take_numeros[posicion_numero_take] = crearTerceto_icc($1, "", "");
+														};
 
 
 /* FIN LONG Y TAKE */
@@ -505,7 +507,7 @@ factor: ID	               {
 						IndFactor = IndLong; 
 						}
 	  | take			{ 
-						verificarTipoDato(Float);
+						verificarTipoDato(Integer);
 						IndFactor = IndTake; 
 						}
 	  ;
@@ -841,12 +843,12 @@ printf("HOLA1\n");
 		opBinaria; // Formato terceto (x, x, x)
 	int agregar_etiqueta_final_nro = -1;
 	
-	// Guardo todos los tercetos donde tendrÃ­a que poner etiquetas
+	// Guardo todos los tercetos donde tendria que poner etiquetas
 	for(i = 0; i < terceto_index; i++)
 	{
 		if (strcmp(tercetos[i].dos, "") != 0 && strcmp(tercetos[i].tres, "") ==0)
 		{
-			if (strcmp(tercetos[i].uno, "READ") != 0 && strcmp(tercetos[i].uno, "WRITE") != 0)
+			if (strcmp(tercetos[i].uno, "GET") != 0 && strcmp(tercetos[i].uno, "DISPLAY") != 0)
 			{
 				int found = -1;
 				int j;
@@ -871,7 +873,7 @@ printf("HOLA1\n");
 	for (i = 0; i < terceto_index; i++) 
 	{
 		//printf("TERCETO NUMERO %d \n", i);
-
+		printf("HOLAAAAA  %d | %s %s %s \n",i,tercetos[i].uno,tercetos[i].dos,tercetos[i].tres);
 		if (strcmp("", tercetos[i].dos) == 0) {
 			opSimple = 1;
 			opUnaria = 0;
@@ -979,6 +981,7 @@ printf("HOLA3.%d.6\n",i);
 			printf("HOLA3.%d.5\n",i);
 			if (strcmp(tercetos[i].uno, "=" ) == 0)
 			{
+			printf("HOLA3.%d.5.1\n",i);
 				int tipo = buscarTipoTS(tercetos[atoi(tercetos[i].dos)].uno);
 				if (tipo == Float | tipo == Integer) // Si se quiere separar integer hay que ver tambien las expresiones
 				{
@@ -994,6 +997,7 @@ printf("HOLA3.%d.6\n",i);
 			}
 			else if (strcmp(tercetos[i].uno, "CMP" ) == 0)
 			{
+			printf("HOLA3.%d.5.2\n",i);
 				int tipo = buscarTipoTS(op1);
 				if (tipo == Float | tipo == Integer) 
 				{
@@ -1015,7 +1019,9 @@ printf("HOLA3.%d.6\n",i);
 			}
 			else
 			{
+			printf("HOLA3.%d.5.3\n",i);
 				int tipo = buscarTipoTS(op1);
+				char* auxx;
 				if (tipo == String)
 				{
 					yyerror("Ops! No estan soportadas las operaciones entre cadenas\n");
@@ -1026,12 +1032,20 @@ printf("HOLA3.%d.6\n",i);
 				fprintf(pf_asm, "\t FLD %s \t;Cargo operando 1\n", getNombreAsm(op1));
 				fprintf(pf_asm, "\t FLD %s \t;Cargo operando 2\n", getNombreAsm(op2));
 				fflush(pf_asm);
-printf("HOLA3.%d.4\n",i);
-				fprintf(pf_asm, "\t %s \t\t;Opero\n", getCodOp(tercetos[i].uno));
+printf("HOLA3.%d.4   %s %s %s \n",i,tercetos[i].uno,tercetos[i].dos,tercetos[i].tres);
+			
+				auxx=buscaDatoEnTerceto(1,i);
+
+printf("HOLA3.%d.4.0012 %s \n",i,auxx);
+
+				fprintf(pf_asm, "\t %s \t\t;Opero\n", getCodOp(auxx));
+				printf("HOLA3.%d.40\n",i);
 				fprintf(pf_asm, "\t FSTP %s \t;Almaceno el resultado en una var auxiliar\n", getNombreAsm(aux));
-				
+				printf("HOLA3.%d.41\n",i);
 				cant_op++;
+				printf("HOLA3.%d.42\n",i);
 				strcpy(lista_operandos_assembler[cant_op], aux);
+				printf("HOLA3.%d.43\n",i);
 			}
 			
 		}
@@ -1056,6 +1070,36 @@ printf("HOLA2.5\n");
 
 
 }
+
+
+/************************************************************************************************************/
+char * buscaDatoEnTerceto(int datoUNODOSTRES, int i){
+	char  auxilia1[5]={'\0','\0','\0','\0','\0'};
+	char * parentecisCierra;
+	char * parentecisHabre;
+	int num;
+	int num2;
+printf("HOLA3.%d.4 INICIO %d %d \n",i, datoUNODOSTRES,i);
+	if(datoUNODOSTRES==1){
+		if(strstr(tercetos[i].uno,"]")){
+			parentecisHabre  = (strstr(tercetos[i].uno,"[")+1);
+			parentecisCierra = strstr(tercetos[i].uno,"]");
+			printf("HOLA3.%d.4.032 %d %d \n",i, &(*parentecisCierra),&(*parentecisHabre));
+			printf("HOLA3.%d.4.0322 %s %s \n",i, (parentecisCierra),(parentecisHabre));
+			num = (int) &(*parentecisCierra);
+			num2 = (int) &(*parentecisHabre);
+			printf("HOLA3.%d.4.033 %d \n",i, num-num2);
+			//*(auxilia1) = '\0';
+			strncpy(auxilia1,parentecisHabre,(num-num2));
+			printf("HOLA3.%d.4.034 %s \n",i,&auxilia1 );
+			return tercetos[(atoi(auxilia1))].uno;
+		}
+		else return tercetos[i].uno;
+		//printf("HOLA3.%d.4.035 %s \n",i,aux2 );
+	}
+}
+
+
 
 /************************************************************************************************************/
 char* getCodOp(char* token)
